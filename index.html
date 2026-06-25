@@ -393,9 +393,7 @@
         Add as many as you like; the sidebar grows automatically.
      ========================================================= */
   const PROJECTS = [
-    // embed:false -> BoomRx blocks iframe embedding (X-Frame-Options on its host),
-    // so the hub opens it in a new tab instead of showing a blank panel.
-    { name: "BoomRx Maps",            url: "https://boomrxmaps.com/", embed: false },
+    { name: "BoomRx Maps",            url: "https://boomrxmaps.com/" },
     { name: "JMS Shipment Tracker",   url: "https://flbocateam.github.io/JMS-Shipment-Tracker/index.html" },
     { name: "JMS Clinic Order Streak",url: "https://jms-metrics.github.io/Clinic-Ordering-History/" },
     { name: "JMS Sales Dashboard",    url: "https://flbocateam.github.io/JMS-Dashboard/" },
@@ -482,13 +480,15 @@
     // site's frame headers), show a clean fallback after a timeout.
     clearTimeout(loadTimer);
     viewer.onload = () => { clearTimeout(loadTimer); overlay.classList.remove('show'); };
+    // Generous safety net: heavy dashboards (e.g. map apps) can take 15s+ to
+    // first paint. Only show this gentle fallback if the frame truly never loads.
     loadTimer = setTimeout(() => {
       ovSpinner.style.display = 'none';
-      ovTitle.textContent = 'This dashboard blocks embedding';
-      ovMsg.textContent   = p.name + " can't be shown inside the hub because its host doesn't allow being framed. Open it in a new tab instead — everything else works normally.";
+      ovTitle.textContent = p.name + ' is taking a while to load';
+      ovMsg.textContent   = "It's a heavy dashboard, so give it a moment. You can hit Reload, or open it in its own tab.";
       ovLink.textContent  = 'Open ' + p.name;
       ovLink.style.display = 'inline-flex';
-    }, 6000);
+    }, 20000);
 
     viewer.src = p.url;
     closeSidebar();
