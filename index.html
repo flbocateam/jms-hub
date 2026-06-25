@@ -8,23 +8,22 @@
 <style>
   /* =========================================================
      JMS HUB — single-file static dashboard
-     Theme: "Aether Flow" interactive purple particle network.
+     Theme: "Aether Flow" interactive purple particle network,
+     featured prominently in the menu bar (always visible).
      To ADD / EDIT / REMOVE a project, scroll to the PROJECTS
-     array near the bottom of this file. That's the only thing
-     you need to touch.
+     array near the bottom of this file.
      ========================================================= */
 
   :root {
     --bg: #000000;
     --panel: rgba(18, 14, 28, 0.55);
-    --panel-solid: #0c0a12;
     --border: #2a2440;
-    --border-soft: rgba(191, 128, 255, 0.14);
+    --border-soft: rgba(191, 128, 255, 0.16);
     --text: #f3f0fa;
-    --text-dim: rgba(243, 240, 250, 0.55);
-    --accent: #bf80ff;       /* Aether Flow purple */
+    --text-dim: rgba(243, 240, 250, 0.6);
+    --accent: #bf80ff;
     --accent-strong: #a855f7;
-    --live: #34d399;         /* green = online/live indicator */
+    --live: #34d399;
     --radius: 14px;
     --sidebar-w: 290px;
   }
@@ -39,7 +38,7 @@
     overflow: hidden;
   }
 
-  /* Particle-network canvas sits behind everything */
+  /* Full-window particle-network canvas behind everything */
   #bg-canvas {
     position: fixed;
     inset: 0;
@@ -49,14 +48,14 @@
     z-index: 0;
   }
 
-  /* Subtle veil so the network doesn't fight the UI text */
+  /* Light veil — kept subtle so the network reads clearly */
   #veil {
     position: fixed;
     inset: 0;
     z-index: 1;
     background:
-      radial-gradient(130% 100% at 50% -20%, rgba(124,58,237,0.10), rgba(0,0,0,0.55) 70%),
-      linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+      radial-gradient(130% 100% at 50% -20%, rgba(124,58,237,0.14), rgba(0,0,0,0.30) 78%),
+      linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.26));
     pointer-events: none;
   }
 
@@ -69,16 +68,26 @@
     height: 100vh;
   }
 
-  /* ---------------- Sidebar ---------------- */
+  /* ---------------- Sidebar (the featured menu bar) ---------------- */
   .sidebar {
-    backdrop-filter: blur(18px) saturate(140%);
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-    background: var(--panel);
-    border-right: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    background: #09060f;
+    border-right: 1px solid var(--accent-strong);
+    box-shadow: 0 0 40px rgba(168,85,247,0.18);
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
+  /* The menu bar's own living particle network */
+  #side-canvas { position: absolute; inset: 0; z-index: 0; }
+  /* Gentle gradient so menu text stays crisp over the moving field */
+  .side-veil {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(180deg, rgba(9,6,15,0.30), rgba(9,6,15,0.58));
+  }
+  /* All sidebar content rides above the network */
+  .brand, .nav-label, .nav, .sidebar-foot { position: relative; z-index: 2; }
 
   .brand {
     padding: 22px 20px 16px;
@@ -91,26 +100,22 @@
     display: flex;
     align-items: center;
     gap: 9px;
-    background: linear-gradient(180deg, #ffffff, #b9a7e6);
+    background: linear-gradient(180deg, #ffffff, #c4b1f0);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 24px rgba(168,85,247,0.25);
   }
   .brand .logo {
     width: 30px; height: 30px; border-radius: 9px;
     display: grid; place-items: center;
     background: linear-gradient(160deg, #3b2a63, #150f24);
     border: 1px solid var(--border);
-    box-shadow: 0 0 16px rgba(168,85,247,0.25);
+    box-shadow: 0 0 18px rgba(168,85,247,0.4);
     font-size: 16px;
     -webkit-text-fill-color: initial;
   }
-  .brand p {
-    margin-top: 6px;
-    font-size: 11.5px;
-    color: var(--text-dim);
-    letter-spacing: 0.02em;
-  }
+  .brand p { margin-top: 6px; font-size: 11.5px; color: var(--text-dim); letter-spacing: 0.02em; }
 
   .nav-label {
     padding: 16px 20px 8px;
@@ -136,20 +141,21 @@
     text-align: left;
     cursor: pointer;
     border: 1px solid transparent;
-    background: transparent;
+    background: rgba(10,7,18,0.35);
     color: var(--text);
     border-radius: 11px;
     padding: 12px 13px;
     display: flex;
     align-items: center;
     gap: 11px;
+    backdrop-filter: blur(2px);
     transition: background .18s, border-color .18s, transform .18s, box-shadow .18s;
   }
-  .proj-btn:hover { background: rgba(191,128,255,0.07); border-color: var(--border-soft); }
+  .proj-btn:hover { background: rgba(191,128,255,0.12); border-color: var(--border-soft); }
   .proj-btn.active {
-    background: rgba(191,128,255,0.12);
-    border-color: rgba(191,128,255,0.45);
-    box-shadow: inset 0 0 0 1px rgba(191,128,255,0.10), 0 0 22px rgba(168,85,247,0.18);
+    background: rgba(168,85,247,0.20);
+    border-color: rgba(191,128,255,0.55);
+    box-shadow: inset 0 0 0 1px rgba(191,128,255,0.12), 0 0 24px rgba(168,85,247,0.30);
   }
   .proj-btn .dot {
     width: 9px; height: 9px; border-radius: 50%;
@@ -158,14 +164,8 @@
     flex-shrink: 0;
   }
   .proj-btn .meta { min-width: 0; }
-  .proj-btn .name {
-    font-size: 13.5px; font-weight: 600;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .proj-btn .host {
-    font-size: 11px; color: var(--text-dim);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .proj-btn .name { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .proj-btn .host { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .sidebar-foot {
     padding: 12px 16px 16px;
@@ -183,12 +183,7 @@
   @keyframes ping { 75%,100% { transform: scale(2.4); opacity: 0; } }
 
   /* ---------------- Main viewer ---------------- */
-  .main {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    padding: 14px 14px 14px 0;
-  }
+  .main { display: flex; flex-direction: column; min-width: 0; padding: 14px 14px 14px 0; }
 
   .viewer-shell {
     flex: 1;
@@ -200,7 +195,7 @@
     background: var(--panel);
     backdrop-filter: blur(14px) saturate(130%);
     -webkit-backdrop-filter: blur(14px) saturate(130%);
-    box-shadow: 0 0 40px rgba(124,58,237,0.08);
+    box-shadow: 0 0 40px rgba(124,58,237,0.10);
     min-height: 0;
   }
 
@@ -212,79 +207,38 @@
     border-bottom: 1px solid var(--border-soft);
     background: rgba(10,8,18,0.35);
   }
-  .toolbar .title {
-    font-size: 14px; font-weight: 700; letter-spacing: -0.01em;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .toolbar .title { font-size: 14px; font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .toolbar .url-pill {
-    flex: 1;
-    min-width: 0;
-    font-size: 12px;
-    color: var(--text-dim);
-    background: rgba(191,128,255,0.05);
-    border: 1px solid var(--border-soft);
-    border-radius: 999px;
-    padding: 6px 13px;
+    flex: 1; min-width: 0; font-size: 12px; color: var(--text-dim);
+    background: rgba(191,128,255,0.05); border: 1px solid var(--border-soft);
+    border-radius: 999px; padding: 6px 13px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   .btn {
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: rgba(191,128,255,0.05);
-    color: var(--text);
-    border-radius: 999px;
-    padding: 7px 14px;
-    font-size: 12.5px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    white-space: nowrap;
+    cursor: pointer; border: 1px solid var(--border); background: rgba(191,128,255,0.05);
+    color: var(--text); border-radius: 999px; padding: 7px 14px; font-size: 12.5px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
     transition: transform .15s, background .15s, border-color .15s, box-shadow .15s;
   }
   .btn:hover { background: rgba(191,128,255,0.12); transform: translateY(-1px); }
   .btn svg { width: 15px; height: 15px; }
-  .btn.primary {
-    border-color: rgba(168,85,247,0.5);
-    background: rgba(168,85,247,0.18);
-    color: #f1e6ff;
-    box-shadow: 0 0 16px rgba(168,85,247,0.18);
-  }
+  .btn.primary { border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.18); color: #f1e6ff; box-shadow: 0 0 16px rgba(168,85,247,0.18); }
   .btn.primary:hover { background: rgba(168,85,247,0.28); }
 
-  .frame-wrap {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    background: #0a0810;
-  }
-  iframe.viewer {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    display: block;
-    background: #0a0810;
-  }
+  .frame-wrap { position: relative; flex: 1; min-height: 0; background: #0a0810; }
+  iframe.viewer { width: 100%; height: 100%; border: 0; display: block; background: #0a0810; }
 
   /* Loading + fallback overlay */
   .overlay {
-    position: absolute;
-    inset: 0;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    text-align: center;
-    padding: 30px;
-    background: rgba(8,6,14,0.92);
+    position: absolute; inset: 0; display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; text-align: center; padding: 30px; background: rgba(8,6,14,0.92);
   }
   .overlay.show { display: flex; }
   .overlay .spinner {
     width: 34px; height: 34px; border-radius: 50%;
-    border: 3px solid rgba(191,128,255,0.18);
-    border-top-color: var(--accent);
+    border: 3px solid rgba(191,128,255,0.18); border-top-color: var(--accent);
     animation: spin 0.9s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -292,41 +246,25 @@
   .overlay p { font-size: 13px; color: var(--text-dim); max-width: 430px; line-height: 1.55; }
 
   /* ---------------- Mobile ---------------- */
-  /* Mobile menu backdrop: hidden + out of grid flow on all sizes by default */
   .scrim { display: none; position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,0.5); }
-
   .mobile-bar { display: none; }
   @media (max-width: 820px) {
     .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
     .sidebar {
-      position: fixed;
-      z-index: 30;
-      top: 0; bottom: 0; left: 0;
-      width: 86%;
-      max-width: 320px;
-      transform: translateX(-105%);
-      transition: transform .25s ease;
+      position: fixed; z-index: 30; top: 0; bottom: 0; left: 0;
+      width: 86%; max-width: 320px; transform: translateX(-105%); transition: transform .25s ease;
     }
     .sidebar.open { transform: translateX(0); }
     .main { padding: 0; }
     .viewer-shell { border-radius: 0; border-left: 0; border-right: 0; border-bottom: 0; }
     .mobile-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      background: var(--panel);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      z-index: 2;
-      position: relative;
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      background: #09060f; border-bottom: 1px solid var(--accent-strong); z-index: 2; position: relative;
     }
     .mobile-bar h1 { font-size: 16px; font-weight: 800; }
     .hamburger {
-      cursor: pointer; background: rgba(191,128,255,0.07);
-      border: 1px solid var(--border); border-radius: 10px;
-      width: 40px; height: 40px; display: grid; place-items: center;
-      color: var(--text);
+      cursor: pointer; background: rgba(191,128,255,0.10); border: 1px solid var(--border);
+      border-radius: 10px; width: 40px; height: 40px; display: grid; place-items: center; color: var(--text);
     }
     .hamburger svg { width: 20px; height: 20px; }
     .scrim.show { display: block; }
@@ -341,6 +279,8 @@
   <div class="app">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
+      <canvas id="side-canvas"></canvas>
+      <div class="side-veil"></div>
       <div class="brand">
         <h1><span class="logo">🛰️</span> JMS Hub</h1>
         <p>Mission control for all live dashboards</p>
@@ -409,7 +349,7 @@
   ];
 
   /* =========================================================
-     2) Wiring (no need to edit below for normal use)
+     2) Wiring
      ========================================================= */
   const navEl     = document.getElementById('nav');
   const viewer    = document.getElementById('viewer');
@@ -454,7 +394,6 @@
     vwExt.href          = p.url;
     ovLink.href         = p.url;
 
-    // Known non-embeddable project: show the fallback panel immediately.
     if (p.embed === false) {
       clearTimeout(loadTimer);
       viewer.onload = null;
@@ -470,7 +409,6 @@
       return;
     }
 
-    // Show loading overlay
     overlay.classList.add('show');
     ovSpinner.style.display = 'block';
     ovTitle.textContent = 'Loading ' + p.name + '…';
@@ -480,8 +418,6 @@
 
     clearTimeout(loadTimer);
     viewer.onload = () => { clearTimeout(loadTimer); overlay.classList.remove('show'); };
-    // Generous safety net: heavy dashboards (e.g. map apps) can take 15s+ to
-    // first paint. Only show this gentle fallback if the frame truly never loads.
     loadTimer = setTimeout(() => {
       ovSpinner.style.display = 'none';
       ovTitle.textContent = p.name + ' is taking a while to load';
@@ -497,7 +433,6 @@
 
   vwReload.addEventListener('click', () => { if (activeIndex >= 0) selectProject(activeIndex); });
 
-  // Mobile sidebar
   const sidebar = document.getElementById('sidebar');
   const scrim   = document.getElementById('scrim');
   document.getElementById('hamburger').addEventListener('click', () => {
@@ -510,102 +445,109 @@
   if (PROJECTS.length) selectProject(startIdx);
 
   /* =========================================================
-     3) "Aether Flow" interactive particle-network background
-        (vanilla port — purple particles, distance-linked,
-         repelled by the cursor)
+     3) "Aether Flow" particle-network engine.
+        Reusable factory — one instance fills the window
+        (subtle), a denser/brighter one powers the menu bar.
      ========================================================= */
-  (function initParticles() {
-    const canvas = document.getElementById('bg-canvas');
+  function createField(canvas, o) {
     const ctx = canvas.getContext('2d');
-    let particles = [];
-    let animId = null;
-    const mouse = { x: null, y: null, radius: 160 };
+    let parts = [];
+    const mouse = { x: null, y: null, r: o.repel };
 
-    class Particle {
-      constructor(x, y, dx, dy, size) {
-        this.x = x; this.y = y; this.dx = dx; this.dy = dy; this.size = size;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = 'rgba(191, 128, 255, 0.8)';
-        ctx.fill();
-      }
-      update() {
-        if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
-        if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
-        if (mouse.x !== null) {
-          const ddx = mouse.x - this.x, ddy = mouse.y - this.y;
-          const dist = Math.hypot(ddx, ddy);
-          if (dist < mouse.radius + this.size && dist > 0) {
-            const force = (mouse.radius - dist) / mouse.radius;
-            this.x -= (ddx / dist) * force * 4;
-            this.y -= (ddy / dist) * force * 4;
-          }
-        }
-        this.x += this.dx;
-        this.y += this.dy;
-        this.draw();
+    function init() {
+      parts = [];
+      const n = Math.min((canvas.width * canvas.height) / o.density, o.max);
+      for (let i = 0; i < n; i++) {
+        const s = Math.random() * (o.sizeMax - o.sizeMin) + o.sizeMin;
+        parts.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          dx: (Math.random() * o.speed) - o.speed / 2,
+          dy: (Math.random() * o.speed) - o.speed / 2,
+          s
+        });
       }
     }
 
-    function init() {
-      particles = [];
-      const count = Math.min((canvas.width * canvas.height) / 9000, 260);
-      for (let i = 0; i < count; i++) {
-        const size = Math.random() * 2 + 1;
-        const x = Math.random() * (canvas.width  - size * 4) + size * 2;
-        const y = Math.random() * (canvas.height - size * 4) + size * 2;
-        const dx = (Math.random() * 0.4) - 0.2;
-        const dy = (Math.random() * 0.4) - 0.2;
-        particles.push(new Particle(x, y, dx, dy, size));
-      }
+    function resize() {
+      const r = canvas.getBoundingClientRect();
+      canvas.width  = Math.max(1, Math.floor(r.width));
+      canvas.height = Math.max(1, Math.floor(r.height));
+      init();
     }
 
     function connect() {
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a; b < particles.length; b++) {
-          const d = (particles[a].x - particles[b].x) ** 2 + (particles[a].y - particles[b].y) ** 2;
-          if (d < 20000) {
-            const op = 1 - (d / 20000);
-            let nearMouse = false;
+      for (let a = 0; a < parts.length; a++) {
+        for (let b = a; b < parts.length; b++) {
+          const d = (parts[a].x - parts[b].x) ** 2 + (parts[a].y - parts[b].y) ** 2;
+          if (d < o.link) {
+            const op = (1 - d / o.link) * o.lineAlpha;
+            let near = false;
             if (mouse.x !== null) {
-              const dmx = particles[a].x - mouse.x, dmy = particles[a].y - mouse.y;
-              if (Math.hypot(dmx, dmy) < mouse.radius) nearMouse = true;
+              const mdx = parts[a].x - mouse.x, mdy = parts[a].y - mouse.y;
+              if (Math.hypot(mdx, mdy) < mouse.r) near = true;
             }
-            ctx.strokeStyle = nearMouse
-              ? 'rgba(255, 255, 255, ' + op + ')'
-              : 'rgba(168, 130, 235, ' + op + ')';
+            ctx.strokeStyle = near ? 'rgba(255,255,255,' + op + ')' : 'rgba(' + o.line + ',' + op + ')';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(particles[a].x, particles[a].y);
-            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.moveTo(parts[a].x, parts[a].y);
+            ctx.lineTo(parts[b].x, parts[b].y);
             ctx.stroke();
           }
         }
       }
     }
 
-    function animate() {
-      animId = requestAnimationFrame(animate);
-      ctx.fillStyle = '#000000';
+    function step() {
+      requestAnimationFrame(step);
+      ctx.fillStyle = o.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < particles.length; i++) particles[i].update();
+      for (const p of parts) {
+        if (p.x > canvas.width || p.x < 0) p.dx = -p.dx;
+        if (p.y > canvas.height || p.y < 0) p.dy = -p.dy;
+        if (mouse.x !== null) {
+          const ddx = mouse.x - p.x, ddy = mouse.y - p.y, dist = Math.hypot(ddx, ddy);
+          if (dist < mouse.r + p.s && dist > 0) {
+            const f = (mouse.r - dist) / mouse.r;
+            p.x -= (ddx / dist) * f * 4;
+            p.y -= (ddy / dist) * f * 4;
+          }
+        }
+        p.x += p.dx; p.y += p.dy;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+        ctx.fillStyle = o.dot;
+        ctx.fill();
+      }
       connect();
     }
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      init();
-    }
-
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    window.addEventListener('mousemove', (e) => {
+      const r = canvas.getBoundingClientRect();
+      const lx = e.clientX - r.left, ly = e.clientY - r.top;
+      if (lx >= 0 && ly >= 0 && lx <= r.width && ly <= r.height) { mouse.x = lx; mouse.y = ly; }
+      else { mouse.x = null; mouse.y = null; }
+    });
     window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
     resize();
-    animate();
-  })();
+    step();
+  }
+
+  // Subtle field across the whole window (visible in the margins)
+  createField(document.getElementById('bg-canvas'), {
+    density: 9000, max: 280, link: 20000, lineAlpha: 0.85,
+    sizeMin: 1, sizeMax: 3, speed: 0.4, repel: 160,
+    dot: 'rgba(191,128,255,0.85)', line: '168,130,235', bg: '#000000'
+  });
+
+  // Featured, denser & brighter field inside the menu bar
+  createField(document.getElementById('side-canvas'), {
+    density: 4200, max: 110, link: 17000, lineAlpha: 1,
+    sizeMin: 1, sizeMax: 2.4, speed: 0.35, repel: 130,
+    dot: 'rgba(206,156,255,0.95)', line: '198,150,255', bg: '#09060f'
+  });
   </script>
 </body>
 </html>
