@@ -393,7 +393,9 @@
         Add as many as you like; the sidebar grows automatically.
      ========================================================= */
   const PROJECTS = [
-    { name: "BoomRx Maps",            url: "https://boomrxmaps.com/" },
+    // embed:false -> BoomRx blocks iframe embedding (X-Frame-Options on its host),
+    // so the hub opens it in a new tab instead of showing a blank panel.
+    { name: "BoomRx Maps",            url: "https://boomrxmaps.com/", embed: false },
     { name: "JMS Shipment Tracker",   url: "https://flbocateam.github.io/JMS-Shipment-Tracker/index.html" },
     { name: "JMS Clinic Order Streak",url: "https://jms-metrics.github.io/Clinic-Ordering-History/" },
     { name: "JMS Sales Dashboard",    url: "https://flbocateam.github.io/JMS-Dashboard/" },
@@ -451,11 +453,29 @@
     vwExt.href          = p.url;
     ovLink.href         = p.url;
 
+    // Known non-embeddable project: show the fallback panel immediately
+    // instead of attempting (and failing) to load it in the iframe.
+    if (p.embed === false) {
+      clearTimeout(loadTimer);
+      viewer.onload = null;
+      viewer.removeAttribute('src');
+      overlay.classList.add('show');
+      ovSpinner.style.display = 'none';
+      ovTitle.textContent = p.name + ' opens in its own window';
+      ovMsg.textContent   = p.name + " blocks being embedded inside other pages (a security setting on its host), so it can't display in this panel. Use the button below or “Open in new tab” above.";
+      ovLink.textContent  = 'Open ' + p.name;
+      ovLink.style.display = 'inline-flex';
+      closeSidebar();
+      if (history.replaceState) history.replaceState(null, '', '#' + i);
+      return;
+    }
+
     // Show loading overlay
     overlay.classList.add('show');
     ovSpinner.style.display = 'block';
     ovTitle.textContent = 'Loading ' + p.name + '…';
     ovMsg.textContent   = '';
+    ovLink.textContent  = 'Open in new tab';
     ovLink.style.display = 'none';
 
     // If it loads, hide overlay. If it never loads (blocked by the
@@ -466,6 +486,7 @@
       ovSpinner.style.display = 'none';
       ovTitle.textContent = 'This dashboard blocks embedding';
       ovMsg.textContent   = p.name + " can't be shown inside the hub because its host doesn't allow being framed. Open it in a new tab instead — everything else works normally.";
+      ovLink.textContent  = 'Open ' + p.name;
       ovLink.style.display = 'inline-flex';
     }, 6000);
 
