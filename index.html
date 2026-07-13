@@ -428,7 +428,10 @@
       ovLink.style.display = 'inline-flex';
     }, 20000);
 
-    viewer.src = p.url;
+    // Cache-buster so the panel always pulls the LATEST version of a dashboard
+    // (GitHub Pages tells browsers to cache HTML, which otherwise shows a stale
+    // copy after you push an update). The toolbar URL + "Open in new tab" stay clean.
+    viewer.src = p.url + (p.url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now();
     closeSidebar();
     if (history.replaceState) history.replaceState(null, '', '#' + i);
   }
