@@ -95,7 +95,7 @@
       <p class="subtitle">Monitoring clinics assigned on June 8, 2026 · Orders tracked from June 8 onward</p>
     </div>
     <div class="header-meta">
-      Drug Report Coverage: June 8 – July 9, 2026<br>
+      Drug Report Coverage: June 8 – July 12, 2026<br>
       Transfer Assigned: June 8, 2026<br>
       Last Updated: <span id="lastUpdated"></span>
     </div>
@@ -104,9 +104,9 @@
 
 <div class="summary-bar">
   <div class="stat-card total"><div class="stat-num" id="totalCount">32</div><div class="stat-label">Total Accounts</div></div>
-  <div class="stat-card ordered"><div class="stat-num" id="orderedCount">2</div><div class="stat-label">Ordered ✓</div></div>
-  <div class="stat-card pending"><div class="stat-num" id="pendingCount">30</div><div class="stat-label">Awaiting Order</div></div>
-  <div class="stat-card revenue"><div class="stat-num">$26,527</div><div class="stat-label">Potential Revenue</div></div>
+  <div class="stat-card ordered"><div class="stat-num" id="orderedCount">3</div><div class="stat-label">Ordered ✓</div></div>
+  <div class="stat-card pending"><div class="stat-num" id="pendingCount">29</div><div class="stat-label">Awaiting Order</div></div>
+  <div class="stat-card revenue"><div class="stat-num">$26,227</div><div class="stat-label">Potential Revenue</div></div>
 </div>
 
 <div class="filter-bar">
@@ -121,7 +121,7 @@
 
   <div class="data-note">
     <span class="data-note-icon">ℹ️</span>
-    <span><strong>Drug report data covers June 8 – July 9, 2026.</strong> 2 of 32 transfer accounts have placed orders. Last scan: Jul 9 (Jul 9 data) — 205 Jack/Mark orders / 60 clinics / 0 new transfer hits. "Legacy Health And Longevity" continues to order but remains a different clinic than "Legacy Health" on the transfer list. Notes you type below are saved in your browser.</span>
+    <span><strong>Drug report data covers June 8 – July 12, 2026.</strong> 3 of 32 transfer accounts have placed orders. Last scan: Jul 12 (Jul 10–12 data) — 246 Jack/Mark orders / 76 clinics / 1 new transfer hit: Jomon Wellness (5 orders, Jul 10). "Legacy Health And Longevity" continues to order but remains a different clinic than "Legacy Health" on the transfer list. Notes you type below are saved in your browser.</span>
   </div>
 
   <!-- ZACHARY SALAZAR -->
@@ -130,7 +130,7 @@
       <div style="display:flex;align-items:center;"><span class="rep-name">Zachary Salazar</span><span class="rep-tag">JMS</span></div>
       <div class="rep-stats">
         <div class="rep-stat">Accounts: <span>7</span></div>
-        <div class="rep-stat">Ordered: <span class="rep-ordered-count" id="ord-zachary">0</span></div>
+        <div class="rep-stat">Ordered: <span class="rep-ordered-count" id="ord-zachary">1</span></div>
         <div class="rep-stat">Potential: <span>$7,600</span></div>
         <span class="rep-chevron">▾</span>
       </div>
@@ -167,11 +167,11 @@
             <td data-label="Order Date">—</td><td data-label="Details">—</td>
             <td data-label="Notes"><textarea class="note-input" rows="1" placeholder="Add note..." data-key="nz3" oninput="saveNote(this)"></textarea></td>
           </tr>
-          <tr class="account-row" data-status="pending" data-clinic="Jomon Wellness">
+          <tr class="account-row ordered-row" data-status="ordered" data-clinic="Jomon Wellness">
             <td data-label="Clinic"><span class="clinic-name">Jomon Wellness</span></td>
             <td data-label="Revenue"><span class="revenue-val">$300</span></td>
-            <td data-label="Status"><span class="badge badge-pending"><span class="badge-dot"></span>No Order Yet</span></td>
-            <td data-label="Order Date">—</td><td data-label="Details">—</td>
+            <td data-label="Status"><span class="badge badge-ordered"><span class="badge-dot"></span>Ordered ✓</span></td>
+            <td data-label="Order Date">Jul 10, 2026</td><td data-label="Details">Tirzepatide/Glycine · 5 orders · Inv #236397–236404 · $2,775 total</td>
             <td data-label="Notes"><textarea class="note-input" rows="1" placeholder="Add note..." data-key="nz4" oninput="saveNote(this)"></textarea></td>
           </tr>
           <tr class="account-row" data-status="pending" data-clinic="Vitality Restorative Medicine">
@@ -453,7 +453,7 @@
 <div class="footer">Rep Transfer Order Tracker · ProRx Drug Report · Accounts assigned June 8, 2026</div>
 
 <script>
-  document.getElementById('lastUpdated').textContent = 'Jun 30, 2026';
+  document.getElementById('lastUpdated').textContent = 'Jul 12, 2026';
 
   function toggleRep(id){ document.getElementById(id).classList.toggle('collapsed'); }
 
