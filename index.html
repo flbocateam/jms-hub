@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Content-Security-Policy: restrict what this page may load. Embedding is
+     limited to the known project origins; no external scripts are permitted. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'self' https://boomrxmaps.com https://flbocateam.github.io https://jms-metrics.github.io; base-uri 'self'; form-action 'none'; object-src 'none'" />
 <title>JMS Hub — Project Dashboard</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛰️</text></svg>" />
 <style>
@@ -290,7 +293,7 @@
           </a>
         </div>
         <div class="frame-wrap">
-          <iframe class="viewer" id="viewer" title="Project viewer"></iframe>
+          <iframe class="viewer" id="viewer" title="Project viewer" referrerpolicy="no-referrer"></iframe>
           <div class="overlay" id="overlay">
             <div class="spinner" id="ov-spinner"></div>
             <h3 id="ov-title">Loading…</h3>
@@ -350,12 +353,29 @@
     const b = document.createElement('button');
     b.className = 'proj-btn';
     b.title = p.name;   // tooltip — useful in the collapsed rail
-    b.innerHTML = `
-      <span class="avatar">${initialsOf(p.name)}<span class="dot"></span></span>
-      <span class="meta">
-        <span class="name">${p.name}</span>
-        <span class="host">${hostOf(p.url)}</span>
-      </span>`;
+
+    // Built with DOM nodes + textContent (never innerHTML) so a project name
+    // can never be interpreted as markup — defensive against HTML injection.
+    const avatar = document.createElement('span');
+    avatar.className = 'avatar';
+    avatar.textContent = initialsOf(p.name);
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    avatar.appendChild(dot);
+
+    const meta = document.createElement('span');
+    meta.className = 'meta';
+    const name = document.createElement('span');
+    name.className = 'name';
+    name.textContent = p.name;
+    const host = document.createElement('span');
+    host.className = 'host';
+    host.textContent = hostOf(p.url);
+    meta.appendChild(name);
+    meta.appendChild(host);
+
+    b.appendChild(avatar);
+    b.appendChild(meta);
     b.addEventListener('click', () => selectProject(i));
     navEl.appendChild(b);
   });
